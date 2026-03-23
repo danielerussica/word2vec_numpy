@@ -15,20 +15,24 @@ Implementation of the skip-gram Word2Vec model in both PyTorch and NumPy, coveri
 
 - Binary classification loss: maximize $\sigma(\mathbf{u}_o^\top \mathbf{v}_c)$ for true pairs, minimize it for $k$ noise pairs
 - Two samplers:
-  - `UniformNegativeSampler` — draws negatives uniformly at random
-  - `UnigramNegativeSampler` — draws from a unigram$^{0.75}$ distribution (the original Word2Vec approach), with rejection sampling to exclude true context words
+  - `UniformNegativeSampler`: draws negatives uniformly at random
+  - `UnigramNegativeSampler`: draws from a unigram^0.75 distribution (the original Word2Vec approach), with rejection sampling to exclude true context words
 - Trained on Jane Austen's *Emma* (NLTK Gutenberg corpus, ~6,900 vocab, ~815,000 training pairs)
 - Embeddings visualized with PCA
 
 ## Embeddings visualization
 
+### PCA projection for toy dataset 
+
 PCA projection of the toy corpus after training with full softmax. Semantically related words cluster together: *cat*/*dog* are neighbours, location words (*kitchen*, *bedroom*, *house*) form their own region, and action words (*sleeping*, *resting*, *sitting*) land close to their associated furniture and location terms.
 
 ![Word embeddings PCA](/imgs/output.png)
 
+### t-SNE projection for Emma dataset
+
 t-SNE projection of the top-100 most frequent words from [*Emma*](https://en.wikipedia.org/wiki/Emma_(novel)) after training with negative sampling. Thematically related words cluster visibly: names, domestic terms, and social/emotional language form distinct regions (*man*, *woman*, and *young* appear together in the bottom-left corner).
 
-Since the model was trained on a single novel, isolated clusters far from the main cloud tend to belong to characters — words that share a very specific, book-internal context. *Frank Churchill*, *Jane Fairfax*, and *Mr Knightley* are clear examples.
+Since the model was trained on a single novel, isolated clusters far from the main cloud tend to belong to characters, words that share a very specific, book-internal context. *Frank Churchill*, *Jane Fairfax*, and *Mr Knightley* are clear examples.
 
 ![Word embeddings negative sampling t-SNE](/imgs/output_ns.png)
 

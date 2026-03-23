@@ -20,14 +20,19 @@ Implementation of the skip-gram Word2Vec model in both PyTorch and NumPy, coveri
 - Trained on Jane Austen's *Emma* (NLTK Gutenberg corpus, ~6,900 vocab, ~815,000 training pairs)
 - Embeddings visualized with PCA
 
-## Bugs fixed
+## Embeddings visualization
 
-| # | Location | Fix |
-|---|----------|-----|
-| 1 | `SkipGramNegSamplingNumpy.train_one_epoch` | Replaced `W2[neg_indices] -= lr * du_n` with `np.add.at(W2, neg_indices, -lr * du_n)`. NumPy fancy-index assignment reads the original value once and drops all but the last duplicate update; `np.add.at` accumulates correctly. |
-| 3 | `SkipGramNegSamplingNumpy.sigmoid` | Replaced `1 / (1 + exp(-x))` with a branch-stable form: positive `x` uses `1/(1+exp(-x))`, negative `x` uses `exp(x)/(1+exp(x))`. The original overflowed to `inf` for large negative inputs, producing `nan` in the log-loss. |
+PCA projection of the toy corpus after training with full softmax. Semantically related words cluster together: *cat*/*dog* are neighbours, location words (*kitchen*, *bedroom*, *house*) form their own region, and action words (*sleeping*, *resting*, *sitting*) land close to their associated furniture and location terms.
 
-## Gradient derivations (`derivations.md`)
+![Word embeddings PCA](/imgs/output.png)
+
+t-SNE projection of the top-100 most frequent words from [*Emma*](https://en.wikipedia.org/wiki/Emma_(novel)) after training with negative sampling. Thematically related words cluster visibly: names, domestic terms, and social/emotional language form distinct regions (*man*, *woman*, and *young* appear together in the bottom-left corner).
+
+Since the model was trained on a single novel, isolated clusters far from the main cloud tend to belong to characters — words that share a very specific, book-internal context. *Frank Churchill*, *Jane Fairfax*, and *Mr Knightley* are clear examples.
+
+![Word embeddings negative sampling t-SNE](/imgs/output_ns.png)
+
+## Gradient derivations
 
 ### Full softmax
 
